@@ -1,0 +1,242 @@
+/* Monochrome Style Sheet - Black & White, No Colors, No Gradients */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: monospace; /* basic, typewriter font style */
+  margin: 0;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.app-container {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.header {
+  border-bottom: 2px solid #000000;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  text-transform: uppercase;
+}
+
+.header p {
+  margin: 5px 0 15px 0;
+  font-size: 14px;
+}
+
+.nav {
+  display: flex;
+  gap: 15px;
+}
+
+.nav a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: bold;
+  border: 1px solid #000000;
+  padding: 6px 12px;
+}
+
+.nav a:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.page {
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 5px;
+}
+
+/* Forms styling */
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: 2px solid #000000;
+}
+
+.error-msg {
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+  display: block;
+}
+
+.error-msg::before {
+  content: "* ERROR: ";
+}
+
+.btn {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-secondary {
+  margin-left: 10px;
+}
+
+/* Directory Header & Search */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.section-header h2 {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.search-panel {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-panel input {
+  width: 220px;
+}
+
+.search-panel button {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
+.search-panel button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Simple Grid Tables */
+.books-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.books-table th, .books-table td {
+  border: 1px solid #000000;
+  padding: 10px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.books-table th {
+  background-color: #000000;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.table-info-msg {
+  text-align: center;
+  font-style: italic;
+  padding: 30px !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.action-buttons button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Feedback notifications */
+.feedback-container {
+  border: 3px double #000000;
+  padding: 12px 18px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.close-feedback-btn {
+  background: transparent;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.app-footer {
+  margin-top: 50px;
+  border-top: 2px solid #000000;
+  padding-top: 15px;
+  font-size: 12px;
+  text-align: center;
+  text-transform: uppercase;
+}

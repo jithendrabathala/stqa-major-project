@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Haven - Monochrome Book Manager</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <h1 id="appTitle">Book Haven</h1>
+      <p>A Monochrome Book Management System</p>
+      <nav class="nav">
+        <a href="#/books" id="nav-directory" data-testid="nav-directory">Book Directory</a>
+        <a href="#/add" id="nav-add" data-testid="nav-add">Add New Book</a>
+      </nav>
+    </header>
+
+    <!-- Feedback Message Panel -->
+    <div id="feedbackContainer" class="feedback-container hidden" data-testid="feedback-container">
+      <span id="feedbackMessage" data-testid="feedback-message"></span>
+      <button id="closeFeedbackBtn" class="close-feedback-btn" data-testid="feedback-close-btn">&times;</button>
+    </div>
+
+    <!-- PAGE 1: BOOK DIRECTORY -->
+    <main id="page-directory" class="page hidden">
+      <div class="section-header">
+        <h2>Book Directory</h2>
+        
+        <!-- Search Panel -->
+        <div class="search-panel">
+          <input type="text" id="searchInput" placeholder="Search books..." data-testid="input-search" autocomplete="off">
+          <button id="searchBtn" data-testid="btn-search">Search</button>
+          <button id="clearSearchBtn" class="hidden" data-testid="btn-clear-search">Clear</button>
+        </div>
+      </div>
+
+      <!-- Statistics Panel -->
+      <div id="statsSummary" style="font-size: 11px; margin-bottom: 15px; border: 1px solid #000000; padding: 8px; text-transform: uppercase;" data-testid="stats-summary">
+        Loading inventory statistics...
+      </div>
+
+      <!-- Book Table -->
+      <table class="books-table" id="booksTable" data-testid="books-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Year</th>
+            <th>ISBN</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="booksList" data-testid="book-list">
+          <tr id="loadingRow">
+            <td colspan="6" class="table-info-msg" data-testid="loading-status">Loading database...</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+
+    <!-- PAGE 2: ADD BOOK -->
+    <main id="page-add" class="page hidden">
+      <h2>Add New Book</h2>
+      <form id="bookForm" data-testid="book-form" novalidate>
+        <div class="form-group">
+          <label for="title">Book Title</label>
+          <input type="text" id="title" data-testid="input-title" required autocomplete="off">
+          <span class="error-msg" id="titleError" data-testid="error-title"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="author">Author</label>
+          <input type="text" id="author" data-testid="input-author" required autocomplete="off">
+          <span class="error-msg" id="authorError" data-testid="error-author"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="genre">Genre</label>
+          <input type="text" id="genre" data-testid="input-genre" required autocomplete="off">
+          <span class="error-msg" id="genreError" data-testid="error-genre"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="publishedYear">Published Year</label>
+          <input type="number" id="publishedYear" data-testid="input-published-year" required autocomplete="off">
+          <span class="error-msg" id="yearError" data-testid="error-year"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input type="text" id="isbn" data-testid="input-isbn" required autocomplete="off">
+          <span class="error-msg" id="isbnError" data-testid="error-isbn"></span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submitBtn" class="btn" data-testid="btn-submit">Add Book</button>
+        </div>
+      </form>
+    </main>
+
+    <!-- PAGE 3: EDIT BOOK -->
+    <main id="page-edit" class="page hidden">
+      <h2>Edit Book</h2>
+      <form id="editBookForm" data-testid="edit-book-form" novalidate>
+        <input type="hidden" id="editBookId" data-testid="input-id">
+        
+        <div class="form-group">
+          <label for="editTitle">Book Title</label>
+          <input type="text" id="editTitle" data-testid="edit-input-title" required autocomplete="off">
+          <span class="error-msg" id="editTitleError" data-testid="edit-error-title"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="editAuthor">Author</label>
+          <input type="text" id="editAuthor" data-testid="edit-input-author" required autocomplete="off">
+          <span class="error-msg" id="editAuthorError" data-testid="edit-error-author"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="editGenre">Genre</label>
+          <input type="text" id="editGenre" data-testid="edit-input-genre" required autocomplete="off">
+          <span class="error-msg" id="editGenreError" data-testid="edit-error-genre"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="editPublishedYear">Published Year</label>
+          <input type="number" id="editPublishedYear" data-testid="edit-input-published-year" required autocomplete="off">
+          <span class="error-msg" id="editYearError" data-testid="edit-error-year"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="editIsbn">ISBN</label>
+          <input type="text" id="editIsbn" data-testid="edit-input-isbn" required autocomplete="off">
+          <span class="error-msg" id="editIsbnError" data-testid="edit-error-isbn"></span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="editSubmitBtn" class="btn" data-testid="edit-btn-submit">Update Book</button>
+          <button type="button" id="editCancelBtn" class="btn btn-secondary" data-testid="edit-btn-cancel">Cancel</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <p>Book Haven System - Black & White Edition</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

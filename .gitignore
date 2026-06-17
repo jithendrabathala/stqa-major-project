@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+server.log
+
+# Maven / Java
+target/
+*.class
+
+# Cypress
+tests/cypress/screenshots/
+tests/cypress/videos/
+tests/cypress/downloads/
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
