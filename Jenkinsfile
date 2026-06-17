@@ -11,41 +11,52 @@ pipeline {
         JAVA_HOME = '/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home'
         NODE_BIN  = '/Users/jithendra/.nvm/versions/node/v22.21.0/bin'
         PNPM_BIN  = '/Users/jithendra/Library/pnpm'
-        PATH      = "${env.JAVA_HOME}/bin:${env.NODE_BIN}:${env.PNPM_BIN}:${env.PATH}"
+        // Prepend /opt/homebrew/bin for colima/docker/docker-compose
+        PATH      = "/opt/homebrew/bin:${env.JAVA_HOME}/bin:${env.NODE_BIN}:${env.PNPM_BIN}:${env.PATH}"
+
     }
 
     stages {
-        stage('Install Frontend Dependencies') {
+        // === CI Pipeline ===
+
+        stage('Checkout Source') {
             steps {
-                echo 'Installing frontend packages...'
+                echo 'Checking out source code...'
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building application Docker image using Docker Compose...'
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Start Container') {
+            steps {
+                echo 'Starting application and database containers...'
+                sh 'docker compose up -d'
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                echo 'Running Unit Tests inside the application container...'
+                sh 'docker compose exec -T app pnpm run test:unit'
+            }
+        }
+
+        stage('Run Cypress Tests') {
+            steps {
+                echo 'Installing local frontend dependencies for Cypress runner...'
                 sh 'pnpm install'
+                echo 'Running Cypress End-to-End tests...'
+                sh 'pnpm run cypress:run'
             }
         }
 
-        stage('Start Application Server') {
-            steps {
-                echo 'Starting Node.js application server in background...'
-                // Run the app in background and redirect output
-                sh 'nohup pnpm dev > server.log 2>&1 &'
-                
-                echo 'Waiting for server to become active on port 3000...'
-                sh '''
-                    timeout=30
-                    count=0
-                    until curl -s http://localhost:3000 > /dev/null || [ $count -eq $timeout ]; do
-                        sleep 1
-                        count=$((count + 1))
-                    done
-                    if [ $count -eq $timeout ]; then
-                        echo "Timeout waiting for server to start!"
-                        exit 1
-                    fi
-                    echo "Server is up and running!"
-                '''
-            }
-        }
-
-        stage('Run Selenium Tests (TestNG)') {
+        stage('Run Selenium Tests') {
             steps {
                 echo 'Running Selenium E2E tests with Maven and TestNG...'
                 dir('tests/selenium') {
@@ -53,16 +64,34 @@ pipeline {
                 }
             }
         }
+
+        stage('Perform Health Check') {
+            steps {
+                echo 'Performing health check on the running application...'
+                sh '''
+                    timeout=30
+                    count=0
+                    until curl -s http://localhost:3000/api/books > /dev/null || [ $count -eq $timeout ]; do
+                        sleep 1
+                        count=$((count + 1))
+                    done
+                    if [ $count -eq $timeout ]; then
+                        echo "Health check failed: Server is not responding!"
+                        exit 1
+                    fi
+                    echo "Health check passed: Server is running successfully on port 3000!"
+                '''
+            }
+        }
+
     }
 
     post {
         always {
-            echo 'Cleaning up running application server...'
-            // Stop the server running on port 3000
-            sh 'kill $(lsof -t -i:3000) || true'
-            
+            echo 'Shutting down Docker containers and cleaning volumes...'
+            sh 'docker compose down -v'
+
             echo 'Archiving TestNG test results...'
-            // Publish TestNG results using the built-in JUnit step, allowing empty if previous stages failed
             junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml', allowEmptyResults: true
         }
     }
