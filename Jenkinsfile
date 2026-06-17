@@ -7,6 +7,8 @@ pipeline {
         ECR_REPO_NAME      = 'book-management-web'
         ECS_CLUSTER_NAME   = 'intelligent-gecko-0igu5p'
         ECS_SERVICE_NAME   = 'book-management-service'
+        AWS_ACCESS_KEY_ID  = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
 
     triggers {
@@ -84,12 +86,7 @@ pipeline {
         stage('Login to AWS ECR') {
             steps {
                 echo 'Logging in to AWS ECR...'
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-credentials'
-                ]]) {
-                    sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
-                }
+                sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
             }
         }
 
