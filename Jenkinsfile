@@ -1,9 +1,17 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_DEFAULT_REGION = 'us-north-1'
+        AWS_ACCOUNT_ID     = '891982900466' // Replace with your actual AWS Account ID
+        ECR_REPO_NAME      = 'book-management-web'
+        ECS_CLUSTER_NAME   = 'intelligent-gecko-0igu5p'
+        ECS_SERVICE_NAME   = 'book-management-service'
+    }
+
     triggers {
         githubPush() // Trigger build on GitHub push webhook
-        pollSCM('H/15 * * * *') // Poll SCM every 15 minutes
+        pollSCM('H/5 * * * *') // Poll SCM every 5 minutes
     }
 
     stages {
@@ -68,6 +76,39 @@ pipeline {
                     fi
                     echo "Health check passed: Server is running successfully on port 3000!"
                 '''
+            }
+        }
+
+        // === CD Pipeline ===
+
+        stage('Login to AWS ECR') {
+            steps {
+                echo 'Logging in to AWS ECR...'
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials'
+                ]]) {
+                    sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
+                }
+            }
+        }
+
+        stage('Push Image to ECR') {
+            steps {
+                echo 'Pushing Docker image to Amazon ECR...'
+                sh '''
+                    docker tag book-management-ci-web:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest
+                    docker tag book-management-ci-web:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:${BUILD_NUMBER}
+                    docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest
+                    docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Deploy to ECS') {
+            steps {
+                echo 'Updating ECS Service for continuous deployment...'
+                sh 'aws ecs update-service --cluster ${ECS_CLUSTER_NAME} --service ${ECS_SERVICE_NAME} --force-new-deployment --region ${AWS_DEFAULT_REGION}'
             }
         }
     }
