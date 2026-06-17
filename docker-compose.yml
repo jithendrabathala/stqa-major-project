@@ -6,7 +6,7 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  app:
+  web:
     build: .
     ports:
       - "3000:3000"

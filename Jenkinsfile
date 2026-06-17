@@ -27,14 +27,14 @@ pipeline {
         stage('Start Container') {
             steps {
                 echo 'Starting application, database, and browser containers...'
-                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml up -d app mongodb chrome'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml up -d web mongodb chrome'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 echo 'Running Unit Tests inside the application container...'
-                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T app pnpm run test:unit'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T web pnpm run test:unit'
             }
         }
 
