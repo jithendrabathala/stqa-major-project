@@ -1,0 +1,63 @@
+name: Book Management System CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Application Docker Image
+        run: docker compose build
+
+      - name: Start Database, Application, and Chrome containers
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml up -d web mongodb chrome
+
+      - name: Wait for Application Healthcheck
+        run: |
+          timeout=30
+          count=0
+          until curl -s http://localhost:3000/api/books > /dev/null || [ $count -eq $timeout ]; do
+            echo "Waiting for app to respond on port 3000... ($count/$timeout)"
+            sleep 1
+            count=$((count + 1))
+          done
+          if [ $count -eq $timeout ]; then
+            echo "Health check failed: App is not responding!"
+            docker compose logs web
+            exit 1
+          fi
+          echo "App is responding successfully on port 3000!"
+
+      - name: Run Unit Tests
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T web pnpm run test:unit
+
+      - name: Run Cypress Tests
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm cypress
+
+      - name: Run Selenium Tests
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm selenium-runner
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-reports
+          path: |
+            tests/selenium/target/surefire-reports/
+            cypress/screenshots/
+            cypress/videos/
+
+      - name: Tear Down Containers
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml down -v --remove-orphans
