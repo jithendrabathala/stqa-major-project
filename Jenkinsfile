@@ -60,8 +60,8 @@ pipeline {
             sh 'kill $(lsof -t -i:3000) || true'
             
             echo 'Archiving TestNG test results...'
-            // Publish TestNG results using the Jenkins TestNG plugin
-            testng(target: '**/testng-results.xml')
+            // Publish TestNG results using the built-in JUnit step
+            junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml'
         }
     }
 }
