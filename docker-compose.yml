@@ -15,6 +15,12 @@ services:
       - MONGODB_URI=mongodb://mongodb:27017/bookdb
     depends_on:
       - mongodb
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/books').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 3s
 
 volumes:
   mongo-data:
