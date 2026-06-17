@@ -15,18 +15,10 @@ pipeline {
     }
 
     stages {
-        stage('Install Frontend Dependencies') {
+        stage('Start Docker Containers') {
             steps {
-                echo 'Installing frontend packages...'
-                sh 'pnpm install'
-            }
-        }
-
-        stage('Start Application Server') {
-            steps {
-                echo 'Starting Node.js application server in background...'
-                // Run the app in background and redirect output
-                sh 'nohup pnpm dev > server.log 2>&1 &'
+                echo 'Building and starting app and database in Docker Compose...'
+                sh 'docker compose up --build -d'
                 
                 echo 'Waiting for server to become active on port 3000...'
                 sh '''
@@ -37,17 +29,17 @@ pipeline {
                         count=$((count + 1))
                     done
                     if [ $count -eq $timeout ]; then
-                        echo "Timeout waiting for server to start!"
+                        echo "Timeout waiting for server to start in Docker!"
                         exit 1
                     fi
-                    echo "Server is up and running!"
+                    echo "Dockerized application is up and running!"
                 '''
             }
         }
 
         stage('Run Selenium Tests (TestNG)') {
             steps {
-                echo 'Running Selenium E2E tests with Maven and TestNG...'
+                echo 'Running Selenium E2E tests against Docker container...'
                 dir('tests/selenium') {
                     sh 'mvn clean test'
                 }
@@ -57,9 +49,8 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up running application server...'
-            // Stop the server running on port 3000
-            sh 'kill $(lsof -t -i:3000) || true'
+            echo 'Shutting down Docker containers...'
+            sh 'docker compose down'
             
             echo 'Archiving TestNG test results...'
             // Publish TestNG results using the built-in JUnit step, allowing empty if previous stages failed
