@@ -7,9 +7,11 @@ pipeline {
     }
 
     environment {
-        // Defining Java Home for the agent
+        // Defining Java Home, Node, and PNPM binary paths for the agent
         JAVA_HOME = '/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home'
-        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+        NODE_BIN  = '/Users/jithendra/.nvm/versions/node/v22.21.0/bin'
+        PNPM_BIN  = '/Users/jithendra/Library/pnpm'
+        PATH      = "${env.JAVA_HOME}/bin:${env.NODE_BIN}:${env.PNPM_BIN}:${env.PATH}"
     }
 
     stages {
@@ -60,8 +62,8 @@ pipeline {
             sh 'kill $(lsof -t -i:3000) || true'
             
             echo 'Archiving TestNG test results...'
-            // Publish TestNG results using the built-in JUnit step
-            junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml'
+            // Publish TestNG results using the built-in JUnit step, allowing empty if previous stages failed
+            junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml', allowEmptyResults: true
         }
     }
 }
