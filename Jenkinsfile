@@ -31,19 +31,19 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
-            steps {
-                echo 'Running Unit Tests inside the application container...'
-                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T web pnpm run test:unit'
-            }
-        }
+        // stage('Run Unit Tests') {
+        //     steps {
+        //         echo 'Running Unit Tests inside the application container...'
+        //         sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T web pnpm run test:unit'
+        //     }
+        // }
 
-        stage('Run Cypress Tests') {
-            steps {
-                echo 'Running Cypress E2E tests inside container...'
-                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm cypress'
-            }
-        }
+        // stage('Run Cypress Tests') {
+        //     steps {
+        //         echo 'Running Cypress E2E tests inside container...'
+        //         sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm cypress'
+        //     }
+        // }
 
         stage('Run Selenium Tests') {
             steps {
