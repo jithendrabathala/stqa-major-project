@@ -6,7 +6,6 @@ pipeline {
         pollSCM('H/15 * * * *') // Poll SCM every 15 minutes
     }
 
-
     stages {
         // === CI Pipeline ===
 
@@ -20,6 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building application Docker image using Docker Compose...'
+                // Build only the production app container
                 sh 'docker compose build'
             }
         }
@@ -27,28 +27,28 @@ pipeline {
         stage('Start Container') {
             steps {
                 echo 'Starting application, database, and browser containers...'
-                sh 'docker compose up -d app mongodb chrome'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml up -d app mongodb chrome'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 echo 'Running Unit Tests inside the application container...'
-                sh 'docker compose exec -T app pnpm run test:unit'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T app pnpm run test:unit'
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
                 echo 'Running Cypress E2E tests inside container...'
-                sh 'docker compose run --rm cypress'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm cypress'
             }
         }
 
         stage('Run Selenium Tests') {
             steps {
                 echo 'Running Selenium E2E tests inside Maven container...'
-                sh 'docker compose run --rm selenium-runner'
+                sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm selenium-runner'
             }
         }
 
@@ -74,8 +74,8 @@ pipeline {
 
     post {
         always {
-            echo 'Shutting down Docker containers and cleaning volumes...'
-            sh 'docker compose down -v'
+            echo 'Shutting down Docker containers, cleaning volumes, and removing built images...'
+            sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml down -v --rmi local --remove-orphans'
 
             echo 'Archiving TestNG test results...'
             junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml', allowEmptyResults: true

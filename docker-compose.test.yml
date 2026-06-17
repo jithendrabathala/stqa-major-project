@@ -1,0 +1,35 @@
+services:
+  chrome:
+    image: selenium/standalone-chromium:latest
+    container_name: book-selenium-chrome
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: 2g
+    depends_on:
+      - app
+
+  cypress:
+    image: cypress/included:13.8.0
+    container_name: book-cypress-runner
+    environment:
+      - CYPRESS_baseUrl=http://book-app:3000
+    volumes:
+      - .:/e2e
+    working_dir: /e2e
+    depends_on:
+      - app
+
+  selenium-runner:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: book-selenium-runner
+    environment:
+      - APP_BASE_URL=http://book-app:3000
+      - SELENIUM_GRID_URL=http://chrome:4444/wd/hub
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app/tests/selenium
+    command: mvn clean test
+    depends_on:
+      - app
+      - chrome

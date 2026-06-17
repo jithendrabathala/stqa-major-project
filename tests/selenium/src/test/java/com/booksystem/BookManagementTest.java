@@ -29,7 +29,18 @@ public class BookManagementTest {
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
+
+        String gridUrl = System.getenv("SELENIUM_GRID_URL");
+        if (gridUrl != null && !gridUrl.isEmpty()) {
+            try {
+                driver = new org.openqa.selenium.remote.RemoteWebDriver(new java.net.URL(gridUrl), options);
+            } catch (java.net.MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            driver = new ChromeDriver(options);
+        }
+
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
