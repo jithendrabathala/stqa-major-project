@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'us-north-1'
+        AWS_DEFAULT_REGION = 'eu-north-1'
         AWS_ACCOUNT_ID     = '891982900466' // Replace with your actual AWS Account ID
         ECR_REPO_NAME      = 'book-management-web'
         ECS_CLUSTER_NAME   = 'intelligent-gecko-0igu5p'
