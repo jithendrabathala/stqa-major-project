@@ -67,7 +67,7 @@ public class BookManagementTest {
     }
 
     private String generateRandomIsbn() {
-        return "SEL-" + (100000 + random.nextInt(900000));
+        return "SEL-" + System.currentTimeMillis() + "-" + random.nextInt(100);
     }
 
     @Test(priority = 1)
