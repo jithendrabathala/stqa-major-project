@@ -12,6 +12,7 @@ services:
     image: cypress/included:13.8.0
     environment:
       - CYPRESS_baseUrl=http://web:3000
+      - ELECTRON_EXTRA_LAUNCH_ARGS=--disable-gpu --disable-software-rasterizer --no-sandbox --disable-dev-shm-usage
     volumes:
       - .:/e2e
     working_dir: /e2e
