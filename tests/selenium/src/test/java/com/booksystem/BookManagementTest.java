@@ -20,7 +20,7 @@ public class BookManagementTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private final String baseUrl = "http://localhost:3000";
+    private final String baseUrl = System.getenv("APP_BASE_URL") != null ? System.getenv("APP_BASE_URL") : "http://localhost:3000";
     private final Random random = new Random();
 
     @BeforeMethod

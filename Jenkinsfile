@@ -13,7 +13,8 @@ pipeline {
         PNPM_BIN  = '/Users/jithendra/Library/pnpm'
         // Prepend /opt/homebrew/bin for colima/docker/docker-compose
         PATH      = "/opt/homebrew/bin:${env.JAVA_HOME}/bin:${env.NODE_BIN}:${env.PNPM_BIN}:${env.PATH}"
-
+        // Base URL for E2E tests
+        APP_BASE_URL = 'http://localhost:3000'
     }
 
     stages {
