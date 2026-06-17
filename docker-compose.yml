@@ -1,7 +1,6 @@
 services:
   mongodb:
     image: mongo:latest
-    container_name: book-mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -9,7 +8,6 @@ services:
 
   app:
     build: .
-    container_name: book-app
     ports:
       - "3000:3000"
     environment:

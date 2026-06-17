@@ -1,7 +1,6 @@
 services:
   chrome:
     image: selenium/standalone-chromium:latest
-    container_name: book-selenium-chrome
     ports:
       - "4444:4444"
       - "7900:7900"
@@ -11,9 +10,8 @@ services:
 
   cypress:
     image: cypress/included:13.8.0
-    container_name: book-cypress-runner
     environment:
-      - CYPRESS_baseUrl=http://book-app:3000
+      - CYPRESS_baseUrl=http://app:3000
     volumes:
       - .:/e2e
     working_dir: /e2e
@@ -22,9 +20,8 @@ services:
 
   selenium-runner:
     image: maven:3.9-eclipse-temurin-17
-    container_name: book-selenium-runner
     environment:
-      - APP_BASE_URL=http://book-app:3000
+      - APP_BASE_URL=http://app:3000
       - SELENIUM_GRID_URL=http://chrome:4444/wd/hub
     volumes:
       - .:/usr/src/app
