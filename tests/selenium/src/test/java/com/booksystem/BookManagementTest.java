@@ -29,6 +29,11 @@ public class BookManagementTest {
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
+
+        org.openqa.selenium.logging.LoggingPreferences logPrefs = new org.openqa.selenium.logging.LoggingPreferences();
+        logPrefs.enable(org.openqa.selenium.logging.LogType.BROWSER, java.util.logging.Level.ALL);
+        options.setCapability("goog:loggingPrefs", logPrefs);
 
         String gridUrl = System.getenv("SELENIUM_GRID_URL");
         if (gridUrl != null && !gridUrl.isEmpty()) {
@@ -48,6 +53,15 @@ public class BookManagementTest {
     @AfterMethod
     public void tearDown() {
         if (driver != null) {
+            try {
+                System.out.println("=== BROWSER CONSOLE LOGS ===");
+                driver.manage().logs().get(org.openqa.selenium.logging.LogType.BROWSER).forEach(logEntry -> {
+                    System.out.println(logEntry.getLevel() + ": " + logEntry.getMessage());
+                });
+                System.out.println("============================");
+            } catch (Exception e) {
+                System.out.println("Could not retrieve browser logs: " + e.getMessage());
+            }
             driver.quit();
         }
     }
@@ -58,14 +72,14 @@ public class BookManagementTest {
 
     @Test(priority = 1)
     public void testGetAllBooks() {
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         WebElement table = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-testid='books-table']")));
         Assert.assertNotNull(table, "Books table should be visible on page load.");
     }
 
     @Test(priority = 2)
     public void testGetInventoryStats() {
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         // Wait for stats to load asynchronously
         wait.until(d -> d.findElement(By.cssSelector("[data-testid='stats-summary']")).getText().toUpperCase().contains("TOTAL BOOKS"));
         WebElement statsSummary = driver.findElement(By.cssSelector("[data-testid='stats-summary']"));
@@ -79,7 +93,7 @@ public class BookManagementTest {
     @Test(priority = 3)
     public void testGetBookById() {
         // Create a book first so we can edit/get it by ID
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='nav-add']"))).click();
 
         String isbn = generateRandomIsbn();
@@ -105,7 +119,7 @@ public class BookManagementTest {
 
     @Test(priority = 4)
     public void testCreateNewBook() {
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='nav-add']"))).click();
 
         String isbn = generateRandomIsbn();
@@ -123,7 +137,7 @@ public class BookManagementTest {
 
     @Test(priority = 5)
     public void testUpdateBook() {
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='nav-add']"))).click();
 
         String isbn = generateRandomIsbn();
@@ -155,7 +169,7 @@ public class BookManagementTest {
 
     @Test(priority = 6)
     public void testDeleteBook() {
-        driver.get(baseUrl + "/");
+        driver.get(baseUrl + "/#/books");
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='nav-add']"))).click();
 
         String isbn = generateRandomIsbn();

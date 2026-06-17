@@ -31,7 +31,6 @@ pipeline {
             }
         }
 
-        /*
         stage('Run Unit Tests') {
             steps {
                 echo 'Running Unit Tests inside the application container...'
@@ -45,7 +44,6 @@ pipeline {
                 sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm cypress'
             }
         }
-        */
 
         stage('Run Selenium Tests') {
             steps {
