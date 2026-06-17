@@ -17,6 +17,7 @@ app.use(cors());
 // Configure Content Security Policy to allow styling and script references
 app.use(
   helmet({
+    hsts: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
