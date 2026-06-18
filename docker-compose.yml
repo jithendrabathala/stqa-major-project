@@ -8,6 +8,7 @@ services:
 
   web:
     build: .
+    image: book-management:latest
     ports:
       - "3000:3000"
     environment:

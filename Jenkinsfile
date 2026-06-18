@@ -4,9 +4,9 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'eu-north-1'
         AWS_ACCOUNT_ID     = '891982900466' // Replace with your actual AWS Account ID
-        ECR_REPO_NAME      = 'book-management-web'
-        ECS_CLUSTER_NAME   = 'intelligent-gecko-0igu5p'
-        ECS_SERVICE_NAME   = 'book-management-service'
+        ECR_REPO_NAME      = 'book-management'
+        ECS_CLUSTER_NAME   = 'stqa-major-project-cluster'
+        ECS_SERVICE_NAME   = 'stqa-major-project-task-service'
     }
 
     triggers {
@@ -95,8 +95,8 @@ pipeline {
                 echo 'Pushing Docker image to Amazon ECR...'
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
-                        docker tag book-management-ci-web:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest
-                        docker tag book-management-ci-web:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:${BUILD_NUMBER}
+                        docker tag book-management:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest
+                        docker tag book-management:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:${BUILD_NUMBER}
                         docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest
                         docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:${BUILD_NUMBER}
                     '''
