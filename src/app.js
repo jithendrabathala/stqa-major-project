@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api/books", bookRoutes);
 
 app.get("/api/healthz", (_req, res) => {
-  res.status(200).json({ message: "Server is healthy!!!" });
+  res.status(200).json({ message: "Server is healthy!!! heyyy updated" });
 });
 
 // Fallback for API 404s
