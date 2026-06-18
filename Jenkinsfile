@@ -66,7 +66,7 @@ pipeline {
                 sh '''
                     timeout=30
                     count=0
-                    until curl -s http://localhost:3000/api/books > /dev/null || [ $count -eq $timeout ]; do
+                    until curl -s http://localhost:3000/api/healthz > /dev/null || [ $count -eq $timeout ]; do
                         sleep 1
                         count=$((count + 1))
                     done
