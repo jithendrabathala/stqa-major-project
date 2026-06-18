@@ -120,7 +120,7 @@ pipeline {
             sh 'docker compose -f docker-compose.yml -f docker-compose.test.yml down -v --rmi local --remove-orphans'
 
             echo 'Archiving TestNG test results...'
-            testNG reportFilenamePattern: 'tests/selenium/target/surefire-reports/testng-results.xml', allowEmptyResults: true
+            testNG reportFilenamePattern: 'tests/selenium/target/surefire-reports/testng-results.xml'
             junit testResults: 'tests/selenium/target/surefire-reports/junitreports/*.xml', allowEmptyResults: true
         }
     }
