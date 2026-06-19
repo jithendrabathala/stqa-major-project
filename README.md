@@ -119,10 +119,9 @@ If any dependency is missing, you can install it using [Homebrew](https://brew.s
    ```
 
 3. **Configure Environment Variables**:
-   Create a `.env` file in the root directory:
-   ```env
-   PORT=3000
-   MONGODB_URI=mongodb://127.0.0.1:27017/book_management
+   Copy the example environment configuration file to `.env` and modify the values as needed (especially the MongoDB connection string):
+   ```bash
+   cp .env.example .env
    ```
 
 4. **Start MongoDB**:
